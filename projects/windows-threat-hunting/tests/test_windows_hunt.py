@@ -16,9 +16,9 @@ import unittest
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT))
 
-from windows_hunt import InputError, analyze, load_events
-from windows_hunt.cli import main
-from windows_hunt.ingestion import normalize
+from analyze import analyze
+from read_events import InputError, load_events, normalize
+from run import main
 
 
 PS = r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"

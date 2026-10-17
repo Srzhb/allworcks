@@ -1,4 +1,4 @@
-"""Deterministic observations, a SYN-port-scan heuristic and EVE correlation."""
+"""Сводка DNS/HTTP, поиск серии SYN и проверка оповещений по пакетам."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from datetime import datetime
 import json
 from pathlib import Path
 
-from .pcap import CaptureError, read_pcap
+from pcap import CaptureError, read_pcap
 
 
 DEMO_DOMAIN = "beacon.example.test"
@@ -23,7 +23,7 @@ def demo_dns_match(packet: dict) -> bool:
 def find_scans(packets: list[dict], threshold: int, window: float) -> list[dict]:
     groups: dict[tuple[str, str], list[dict]] = defaultdict(list)
     for packet in packets:
-        # Initial SYN only: exclude SYN+ACK and repeated attempts to the same port.
+        # Берём SYN без ACK. Повторы на один порт не увеличивают число портов.
         if packet.get("protocol") == "TCP" and packet.get("tcp_flags", 0) & 0x12 == 0x02:
             groups[(packet["src_ip"], packet["dest_ip"])].append(packet)
     findings = []

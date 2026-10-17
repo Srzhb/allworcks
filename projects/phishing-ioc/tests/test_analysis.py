@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from phishing_lab.analysis import MAX_MESSAGE_BYTES, Indicator, analyze_message, defang, extract_indicators
+from analysis import MAX_MESSAGE_BYTES, Indicator, analyze_message, defang, extract_indicators
 
 
 class AnalysisTests(unittest.TestCase):

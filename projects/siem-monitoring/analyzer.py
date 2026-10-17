@@ -1,4 +1,4 @@
-"""Small deterministic correlation engine. It never runs event command lines."""
+"""Разбор учебных событий: ошибки входа и индикаторы PowerShell."""
 
 from __future__ import annotations
 
@@ -134,6 +134,7 @@ _NETWORK = re.compile(r"\b(?:downloadstring|downloadfile|invoke-webrequest|iwr)\
 def analyze(events: Iterable[Event], config: AnalysisConfig | None = None) -> dict:
     """Replay in event-time order; keep host/account spellings exactly as supplied."""
     config = config or AnalysisConfig()
+    # В файле строки могут идти не по порядку, поэтому сначала сортируем по времени.
     ordered = sorted(events, key=lambda event: (event.timestamp, event.event_key))
     keys = [event.event_key for event in ordered]
     if len(keys) != len(set(keys)):
@@ -144,12 +145,14 @@ def analyze(events: Iterable[Event], config: AnalysisConfig | None = None) -> di
     ignored_failures = 0
     for event in ordered:
         if event.event_type == "authentication_failed":
+            # Исключение по IP относится только к ошибкам входа.
             if event.source_ip in config.allowed_source_ips:
                 ignored_failures += 1
                 continue
             group = (event.host, event.account)
             window = windows[group]
             cutoff = event.timestamp - timedelta(seconds=config.window_seconds)
+            # Убираем старые ошибки, чтобы считать только события внутри окна.
             while window and window[0].timestamp < cutoff:
                 window.popleft()
             if len(window) < config.failure_threshold:
@@ -164,6 +167,7 @@ def analyze(events: Iterable[Event], config: AnalysisConfig | None = None) -> di
                 ))
                 active.add(group)
         elif event.event_type == "process_start":
+            # Здесь проверяется текст команды. Сама команда никогда не запускается.
             process = PurePosixPath((event.process_name or "").replace("\\", "/")).name.lower()
             if process not in {"powershell", "powershell.exe", "pwsh", "pwsh.exe"}:
                 continue

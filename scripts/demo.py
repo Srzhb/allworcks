@@ -1,4 +1,4 @@
-"""Run the four offline demonstrations. No external service is contacted."""
+"""Запуск четырёх примеров на данных из папки data."""
 
 import argparse
 from pathlib import Path
@@ -32,11 +32,11 @@ def main() -> int:
             command += ["--eve", str(project / "data" / "expected-alerts.eve.jsonl")]
         if name == "windows-threat-hunting":
             command += ["--timeline-csv", str(output_dir / "windows-timeline.csv")]
-        print(f"Running {name}", flush=True)
+        print(f"Запускаю {name}", flush=True)
         result = subprocess.run(command, cwd=ROOT, check=False)
         if result.returncode:
             return result.returncode
-    print(f"Reports saved to {output_dir}")
+    print(f"Отчёты сохранены в {output_dir}")
     return 0
 
 

@@ -1,4 +1,4 @@
-"""Run each project's standard-library tests in an isolated process."""
+"""Запуск тестов для каждой папки с проектом."""
 
 from pathlib import Path
 import subprocess
@@ -18,10 +18,10 @@ def main() -> int:
     for name in PROJECTS:
         tests = ROOT / "projects" / name / "tests"
         if not tests.is_dir() or not list(tests.glob("test_*.py")):
-            print(f"Missing tests: {name}", file=sys.stderr)
+            print(f"Не найдены тесты: {name}", file=sys.stderr)
             failed.append(name)
             continue
-        print(f"\nRunning {name}", flush=True)
+        print(f"\nПроверяю {name}", flush=True)
         result = subprocess.run(
             [sys.executable, "-m", "unittest", "discover", "-s", str(tests), "-v"],
             cwd=ROOT,
@@ -30,9 +30,9 @@ def main() -> int:
         if result.returncode:
             failed.append(name)
     if failed:
-        print("Failed: " + ", ".join(failed), file=sys.stderr)
+        print("Не прошли проверки: " + ", ".join(failed), file=sys.stderr)
         return 1
-    print("\nAll four projects passed.")
+    print("\nВсе проверки прошли.")
     return 0
 
 

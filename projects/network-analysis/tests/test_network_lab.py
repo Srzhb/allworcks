@@ -11,10 +11,10 @@ import unittest
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT))
 
-from network_lab.analysis import analyze, correlate_eve, find_scans
-from network_lab.fixture import (BASE_TIME, checksum, demo_packets, dns_message,
+from analyze import analyze, correlate_eve, find_scans
+from generate_demo import (BASE_TIME, checksum, demo_packets, dns_message,
                                  tcp_packet, udp_packet, write_demo)
-from network_lab.pcap import CaptureError, PacketError, dns_name, parse_dns, parse_frame, parse_http, read_pcap
+from pcap import CaptureError, PacketError, dns_name, parse_dns, parse_frame, parse_http, read_pcap
 
 
 class NetworkLabTests(unittest.TestCase):

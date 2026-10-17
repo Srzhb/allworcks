@@ -10,7 +10,7 @@ import unittest
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT))
 
-from siem_lab import AnalysisConfig, Event, EventError, analyze, load_events
+from analyzer import AnalysisConfig, Event, EventError, analyze, load_events
 
 
 def event(key, second=0, *, host="lab-host", account="demo", kind="authentication_failed", **extra):

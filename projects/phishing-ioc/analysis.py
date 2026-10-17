@@ -1,4 +1,4 @@
-"""Parse untrusted messages without executing HTML or opening links."""
+"""Разбор письма: заголовки, текст и индикаторы."""
 
 from __future__ import annotations
 
@@ -58,7 +58,7 @@ def _domain(value: str) -> str | None:
 
 
 def extract_indicators(text: str) -> list[Indicator]:
-    # Defanged IOCs are accepted in addition to ordinary text.
+    # Принимаем и обычные, и уже обезвреженные индикаторы.
     text = unescape(text).replace("[.]", ".").replace("[@]", "@")
     indicators: set[Indicator] = set()
     for match in URL_RE.finditer(text):
@@ -82,8 +82,8 @@ def extract_indicators(text: str) -> list[Indicator]:
             domain = _domain(host)
             if domain:
                 indicators.add(Indicator("domain", domain))
-    # A URL's path/query can look like a domain, IP or hash (including secret
-    # tokens). Only its hostname is eligible for a separate TI indicator.
+    # В пути и параметрах URL могут быть имена файлов и токены.
+    # Отдельно проверяем только домен или IP из адреса сайта.
     standalone_text = URL_RE.sub(lambda match: " " * len(match.group()), text)
     for match in DOMAIN_RE.finditer(standalone_text):
         domain = _domain(match.group())
@@ -94,7 +94,7 @@ def extract_indicators(text: str) -> list[Indicator]:
             indicators.add(Indicator("ipv4", str(ipaddress.IPv4Address(match.group()))))
         except ValueError:
             pass
-    # Validate colon-containing tokens with ipaddress, so mail timestamps are ignored.
+    # ipaddress отсекает время из заголовков и другие строки с двоеточием.
     for token in re.findall(r"[0-9a-fA-F:]*:[0-9a-fA-F:.]+", standalone_text):
         try:
             indicators.add(Indicator("ipv6", str(ipaddress.IPv6Address(token))))
@@ -118,8 +118,8 @@ def analyze_message(raw: bytes) -> tuple[dict, list[Indicator]]:
     skipped_attachments = 0
     def text_parts(part):
         nonlocal skipped_attachments
-        # message/rfc822 and multipart attachments are containers too. Prune
-        # them before descending so nested content never enters the analysis.
+        # Вложение тоже может состоять из нескольких частей.
+        # Не заходим внутрь него, даже если это другое письмо.
         if part.get_content_disposition() == "attachment" or part.get_filename() or part.get_content_maintype() == "message":
             skipped_attachments += 1
             return

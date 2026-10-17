@@ -1,4 +1,4 @@
-"""Read-only IOC lookups: never submit email, attachments, or file bytes."""
+"""Локальная база примеров и запросы индикаторов к двум API."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from urllib import error, parse, request
 
-from .analysis import Indicator
+from analysis import Indicator
 
 MAX_RESPONSE_BYTES = 1024 * 1024
 SUPPORTED_KINDS = {"domain", "ipv4", "ipv6", "hash"}
@@ -61,7 +61,7 @@ def online_skip_reason(indicator: Indicator) -> str | None:
 
 class _NoRedirect(request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
-        # Credentials must never follow a redirect to another host.
+        # При перенаправлении ключ мог бы уйти на другой сервер.
         return None
 
 
@@ -106,7 +106,7 @@ class IntelligenceClient:
             status = {401: "authentication_error", 403: "access_denied", 404: "not_found", 429: "rate_limited"}.get(exc.code, "http_error")
             if exc.code in {401, 403, 429}:
                 self.disabled_status = status
-            # Never serialize the error object: it may contain URLs, headers or secrets.
+            # Текст ошибки может содержать ключ или адрес запроса, поэтому его не сохраняем.
             return {"provider": self.provider, "status": status, "http_status": exc.code}
         except (error.URLError, TimeoutError, OSError):
             return {"provider": self.provider, "status": "network_error", "reason": "API request failed or timed out."}

@@ -10,14 +10,14 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from phishing_lab.cli import main
+from run import main
 
 PROJECT = Path(__file__).resolve().parents[1]
 
 
 class CLITests(unittest.TestCase):
     def test_offline_demo_outputs_defanged_report_without_network_client(self):
-        with tempfile.TemporaryDirectory() as directory, patch("phishing_lab.cli.IntelligenceClient") as client:
+        with tempfile.TemporaryDirectory() as directory, patch("run.IntelligenceClient") as client:
             output = Path(directory) / "nested" / "report.json"
             self.assertEqual(main(["--input", str(PROJECT / "data" / "suspicious.eml"), "--output", str(output)]), 0)
             report = json.loads(output.read_text())
@@ -27,7 +27,7 @@ class CLITests(unittest.TestCase):
             client.assert_not_called()
 
     def test_online_budget_and_private_ioc_filter(self):
-        with tempfile.TemporaryDirectory() as directory, patch("phishing_lab.cli.IntelligenceClient") as client:
+        with tempfile.TemporaryDirectory() as directory, patch("run.IntelligenceClient") as client:
             path = Path(directory) / "test.eml"
             path.write_text("From: a@example.test\n\nhttps://python.org/a https://pypi.org/b 192.0.2.1\n")
             instance = client.return_value

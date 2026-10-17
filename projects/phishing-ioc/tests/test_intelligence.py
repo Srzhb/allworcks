@@ -8,8 +8,8 @@ from urllib.error import HTTPError, URLError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from phishing_lab.analysis import Indicator
-from phishing_lab.intelligence import IntelligenceClient, MAX_RESPONSE_BYTES, offline_lookup, online_skip_reason
+from analysis import Indicator
+from intelligence import IntelligenceClient, MAX_RESPONSE_BYTES, offline_lookup, online_skip_reason
 
 
 class IntelligenceTests(unittest.TestCase):

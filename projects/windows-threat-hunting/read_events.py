@@ -1,4 +1,4 @@
-"""Read normalized JSONL or XML exported from Windows Event Viewer."""
+"""Чтение событий из JSONL и XML экспорта Sysmon."""
 
 from __future__ import annotations
 

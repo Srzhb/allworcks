@@ -1,4 +1,4 @@
-"""Reference evaluation of three rules, with deterministic GUID correlation."""
+"""Временная шкала Sysmon и три простых правила поиска."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from collections import Counter
 from datetime import datetime
 import re
 
-from .ingestion import Event
+from read_events import Event
 
 
 ENCODED_SWITCH = re.compile(
@@ -47,12 +47,8 @@ def _basename(image: str) -> str:
 
 
 def analyze(events: list[Event]) -> dict:
-    """Analyze all supplied events in timestamp order, without PID fallback.
-
-    Creation precedes network activity for tied timestamps. A missing GUID or
-    host prevents correlation; a creation later than the connection cannot join.
-    Each rule only evaluates its documented event category.
-    """
+    """Сортируем события и добавляем к сетевым записям сведения о процессе."""
+    # При одинаковом времени запуск процесса (Event 1) идёт раньше сети (Event 3).
     ordered = sorted(
         events,
         key=lambda event: (event.timestamp, event.event_id, event.computer.casefold(), event.record_id),
@@ -61,12 +57,15 @@ def analyze(events: list[Event]) -> dict:
     timeline = []
     detections = []
     for sequence, event in enumerate(ordered, 1):
+        # Один PID может появиться снова: связываем по компьютеру и GUID.
         key = (event.computer.casefold(), event.process_guid)
         creation = None
         if event.event_id == 1 and event.process_guid:
             processes[key] = event
         elif event.event_id == 3 and event.process_guid:
+            # В словаре только уже начавшиеся процессы, будущие запуски не подойдут.
             creation = processes.get(key)
+        # Если Image есть в сетевом событии, оставляем его; иначе берём из запуска.
         image = event.image or (creation.image if creation else "")
         command_line = event.command_line or (creation.command_line if creation else "")
         parent_image = event.parent_image or (creation.parent_image if creation else "")

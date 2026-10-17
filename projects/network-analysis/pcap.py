@@ -1,4 +1,4 @@
-"""Bounded classic-PCAP/Ethernet/IPv4 reader; deliberately no TCP reassembly."""
+"""Чтение classic PCAP и заголовков пакетов, без сборки TCP-потоков."""
 
 from __future__ import annotations
 
@@ -31,6 +31,7 @@ def dns_name(data: bytes, offset: int) -> tuple[str, int]:
         visited.add(offset)
         size = data[offset]
         if size & 0xC0 == 0xC0:
+            # В DNS имя может быть ссылкой на другое место пакета.
             if offset + 1 >= len(data):
                 raise PacketError("Truncated DNS compression pointer")
             if end is None:
@@ -155,6 +156,7 @@ def parse_frame(data: bytes) -> dict:
         packet.update({"protocol": "TCP", "src_port": source_port, "dest_port": dest_port,
                        "tcp_flags": payload[13], "payload_bytes": len(payload) - tcp_length})
         try:
+            # Читаем только этот пакет: части HTTP из соседних пакетов не склеиваем.
             http = parse_http(payload[tcp_length:])
             if http:
                 packet["http"] = http
