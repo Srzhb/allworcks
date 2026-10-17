@@ -1,0 +1,9 @@
+<!-- Debian/Ubuntu rsyslog auth file. Use /var/log/secure on matching RHEL
+     installations, or configure journald collection if no auth file exists.
+     Merge the localfile block into the existing Linux agent ossec.conf. -->
+<ossec_config>
+  <localfile>
+    <log_format>syslog</log_format>
+    <location>/var/log/auth.log</location>
+  </localfile>
+</ossec_config>

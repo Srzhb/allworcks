@@ -1,0 +1,26 @@
+{
+  "synthetic": true,
+  "description": "Invented training data. No live service was consulted; labels are not real reputation results.",
+  "indicators": {
+    "domain:login.example.test": {
+      "label": "simulated_suspicious",
+      "note": "Invented training label for the demo login domain."
+    },
+    "domain:accounts.example.test": {
+      "label": "simulated_sender",
+      "note": "Invented sender infrastructure for header analysis."
+    },
+    "ipv4:192.0.2.25": {
+      "label": "simulated_mail_relay",
+      "note": "RFC 5737 documentation IP; no real infrastructure."
+    },
+    "ipv4:192.0.2.45": {
+      "label": "simulated_suspicious",
+      "note": "RFC 5737 documentation IP used as a training link."
+    },
+    "hash:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+      "label": "simulated_hash_match",
+      "note": "Invented SHA-256 string; no file was uploaded or scanned."
+    }
+  }
+}

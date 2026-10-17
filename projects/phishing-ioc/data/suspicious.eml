@@ -1,0 +1,31 @@
+From: IT Support <support@accounts.example.test>
+To: Analyst <analyst@example.org>
+Reply-To: Password Desk <reset@helpdesk.example.test>
+Date: Fri, 16 Oct 2026 12:00:00 +0000
+Subject: Synthetic training: password reset request
+Message-ID: <training-001@example.test>
+Received: from training.example.test (training.example.test [192.0.2.25]) by gateway.example.org;
+ Fri, 16 Oct 2026 12:00:00 +0000
+Authentication-Results: gateway.example.org; spf=fail smtp.mailfrom=accounts.example.test;
+ dkim=none; dmarc=fail header.from=accounts.example.test
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="demo-boundary"
+
+--demo-boundary
+Content-Type: text/plain; charset=utf-8
+
+This message is synthetic and uses reserved domains and documentation IPs.
+Please inspect the training link: http://login.example.test/reset?ref=training
+Another training link: https://192.0.2.45/verify
+A documentation IPv6 address: 2001:db8::25
+Simulated attachment SHA-256:
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+No actual attachment is included.
+
+--demo-boundary
+Content-Type: text/html; charset=utf-8
+
+<html><body><p>Synthetic example only.</p>
+<a href="http://login.example.test/reset?ref=training">Reset password</a>
+</body></html>
+--demo-boundary--

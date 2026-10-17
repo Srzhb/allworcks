@@ -1,0 +1,30 @@
+title: Script interpreter connects to an unusual destination port
+id: ea8c4732-4033-4fb8-8dd9-70c385bf1003
+status: experimental
+description: Script interpreter traffic to a small laboratory watchlist of ports. Image may be enriched from a preceding Sysmon ProcessGuid on the same Computer.
+author: Portfolio laboratory
+date: 2026-10-17
+logsource:
+  product: windows
+  category: network_connection
+detection:
+  selection_image:
+    Image|re: '(?i)(?:^|\\)(?:powershell|pwsh|wscript|cscript)\.exe$'
+  selection_port:
+    DestinationPort:
+      - 1337
+      - 4444
+      - 9001
+  filter_loopback:
+    DestinationIp:
+      - '127.0.0.1'
+      - '::1'
+  condition: selection_image and selection_port and not filter_loopback
+falsepositives:
+  - Approved automation connecting to test services on these ports
+  - Internal administration and development tools
+level: medium
+tags:
+  - attack.execution
+  - attack.command-and-control
+  - attack.t1059

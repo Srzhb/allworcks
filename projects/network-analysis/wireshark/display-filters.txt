@@ -1,0 +1,12 @@
+# Open data/traffic.pcap in Wireshark. These are DISPLAY filters, not capture filters.
+dns
+dns.qry.name == "beacon.example.test"
+dns.flags.rcode == 3
+http.request
+http.request.uri contains ".exe"
+tcp.flags.syn == 1 && tcp.flags.ack == 0
+ip.src == 198.51.100.42 && ip.dst == 192.0.2.20
+frame.number == 3 || frame.number == 10
+
+# Inspect one HTTP conversation, including the TCP handshake:
+tcp.stream eq 0

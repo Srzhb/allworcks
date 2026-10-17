@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "mode": "offline_educational_reconstruction",
+  "config": {
+    "failure_threshold": 5,
+    "window_seconds": 300,
+    "allowed_source_ips": [],
+    "group_by": [
+      "host",
+      "account"
+    ],
+    "window_boundary": "inclusive"
+  },
+  "summary": {
+    "events_read": 21,
+    "sources": {
+      "linux_auth": 10,
+      "sysmon": 4,
+      "windows_security": 7
+    },
+    "failed_authentication_events": 16,
+    "allowlisted_failure_events": 0,
+    "alert_count": 5
+  },
+  "alerts": [
+    {
+      "alert_id": "395d5042fc19b9d8",
+      "rule": "repeated_authentication_failures",
+      "severity": "medium",
+      "timestamp": "2026-01-15T12:03:00.000Z",
+      "host": "lab-linux-01",
+      "account": "demo",
+      "source_ips": [
+        "203.0.113.24"
+      ],
+      "evidence": [
+        {
+          "event_key": "linux-failure-01",
+          "timestamp": "2026-01-15T12:01:00.000Z"
+        },
+        {
+          "event_key": "linux-failure-02",
+          "timestamp": "2026-01-15T12:01:20.000Z"
+        },
+        {
+          "event_key": "linux-failure-03",
+          "timestamp": "2026-01-15T12:02:00.000Z"
+        },
+        {
+          "event_key": "linux-failure-04",
+          "timestamp": "2026-01-15T12:02:20.000Z"
+        },
+        {
+          "event_key": "linux-failure-05",
+          "timestamp": "2026-01-15T12:03:00.000Z"
+        }
+      ],
+      "explanation": "5 failed authentications for this host/account within an inclusive 300s window (threshold 5). Possible password guessing or stale credentials; validate the account and source IPs.",
+      "disposition": "requires_review"
+    },
+    {
+      "alert_id": "57547c11bf672382",
+      "rule": "repeated_authentication_failures",
+      "severity": "medium",
+      "timestamp": "2026-01-15T12:04:00.000Z",
+      "host": "lab-win-01",
+      "account": "LAB\\demo",
+      "source_ips": [
+        "192.0.2.40"
+      ],
+      "evidence": [
+        {
+          "event_key": "win-failure-01",
+          "timestamp": "2026-01-15T12:00:00.000Z"
+        },
+        {
+          "event_key": "win-failure-02",
+          "timestamp": "2026-01-15T12:01:00.000Z"
+        },
+        {
+          "event_key": "win-failure-03",
+          "timestamp": "2026-01-15T12:02:00.000Z"
+        },
+        {
+          "event_key": "win-failure-04",
+          "timestamp": "2026-01-15T12:03:00.000Z"
+        },
+        {
+          "event_key": "win-failure-05",
+          "timestamp": "2026-01-15T12:04:00.000Z"
+        }
+      ],
+      "explanation": "5 failed authentications for this host/account within an inclusive 300s window (threshold 5). Possible password guessing or stale credentials; validate the account and source IPs.",
+      "disposition": "requires_review"
+    },
+    {
+      "alert_id": "3f9ceab0d9de032f",
+      "rule": "powershell_review",
+      "severity": "medium",
+      "timestamp": "2026-01-15T12:07:00.000Z",
+      "host": "lab-win-01",
+      "account": "LAB\\demo",
+      "source_ips": [],
+      "evidence": [
+        {
+          "event_key": "encoded-process",
+          "timestamp": "2026-01-15T12:07:00.000Z"
+        }
+      ],
+      "explanation": "PowerShell contains review indicators: encoded_command_flag. Text matching alone does not establish malicious activity; check approved automation, parent process and script provenance. The command was neither decoded nor executed.",
+      "disposition": "requires_review",
+      "indicators": [
+        "encoded_command_flag"
+      ]
+    },
+    {
+      "alert_id": "552b3ed586aed19f",
+      "rule": "powershell_review",
+      "severity": "high",
+      "timestamp": "2026-01-15T12:08:00.000Z",
+      "host": "lab-win-01",
+      "account": "LAB\\demo",
+      "source_ips": [],
+      "evidence": [
+        {
+          "event_key": "download-process",
+          "timestamp": "2026-01-15T12:08:00.000Z"
+        }
+      ],
+      "explanation": "PowerShell contains review indicators: network_download_and_expression_execution. Text matching alone does not establish malicious activity; check approved automation, parent process and script provenance. The command was neither decoded nor executed.",
+      "disposition": "requires_review",
+      "indicators": [
+        "network_download_and_expression_execution"
+      ]
+    },
+    {
+      "alert_id": "4b0263eeaa7077cb",
+      "rule": "repeated_authentication_failures",
+      "severity": "medium",
+      "timestamp": "2026-01-15T12:10:40.000Z",
+      "host": "lab-linux-01",
+      "account": "scanner_demo",
+      "source_ips": [
+        "198.51.100.10"
+      ],
+      "evidence": [
+        {
+          "event_key": "scanner-failure-01",
+          "timestamp": "2026-01-15T12:10:00.000Z"
+        },
+        {
+          "event_key": "scanner-failure-02",
+          "timestamp": "2026-01-15T12:10:10.000Z"
+        },
+        {
+          "event_key": "scanner-failure-03",
+          "timestamp": "2026-01-15T12:10:20.000Z"
+        },
+        {
+          "event_key": "scanner-failure-04",
+          "timestamp": "2026-01-15T12:10:30.000Z"
+        },
+        {
+          "event_key": "scanner-failure-05",
+          "timestamp": "2026-01-15T12:10:40.000Z"
+        }
+      ],
+      "explanation": "5 failed authentications for this host/account within an inclusive 300s window (threshold 5). Possible password guessing or stale credentials; validate the account and source IPs.",
+      "disposition": "requires_review"
+    }
+  ]
+}

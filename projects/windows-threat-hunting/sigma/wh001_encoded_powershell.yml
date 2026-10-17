@@ -1,0 +1,21 @@
+title: PowerShell with an encoded command switch
+id: ea8c4732-4033-4fb8-8dd9-70c385bf1001
+status: experimental
+description: A process creation uses an encoded PowerShell switch with a base64-like argument. Administration can also trigger this heuristic.
+author: Portfolio laboratory
+date: 2026-10-17
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_image:
+    Image|re: '(?i)(?:^|\\)(?:powershell|pwsh)\.exe$'
+  selection_command:
+    CommandLine|re: '(?i)(?:^|\s)-(?:e|ec|enc|encodedcommand)(?:\s+|:\s*)[A-Za-z0-9+/=]{8,}(?:\s|$)'
+  condition: selection_image and selection_command
+falsepositives:
+  - Approved management agents and administrator automation using encoded commands
+level: medium
+tags:
+  - attack.execution
+  - attack.t1059.001
